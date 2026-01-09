@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:6
+    container_name: ppld-mongodb
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    environment:
+      MONGO_INITDB_DATABASE: plumbing-leak-detection
+
+  backend:
+    build: .
+    container_name: ppld-backend
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    depends_on:
+      - mongodb
+    environment:
+      - NODE_ENV=production
+      - PORT=5000
+      - MONGODB_URI=mongodb://mongodb:27017/plumbing-leak-detection
+      - JWT_SECRET=${JWT_SECRET}
+      - BSV_PRIVATE_KEY=${BSV_PRIVATE_KEY}
+      - BSV_NETWORK=${BSV_NETWORK}
+      - COMPANY_BSV_ADDRESS=${COMPANY_BSV_ADDRESS}
+      - WATERBOARD_BSV_ADDRESS=${WATERBOARD_BSV_ADDRESS}
+      - CORS_ORIGIN=${CORS_ORIGIN}
+    volumes:
+      - ./server:/app/server
+      - /app/node_modules
+
+  frontend:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    container_name: ppld-frontend
+    restart: unless-stopped
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    environment:
+      - REACT_APP_API_URL=http://localhost:5000/api
+
+volumes:
+  mongodb_data:

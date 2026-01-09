@@ -8,6 +8,7 @@ const Dashboard = () => {
   const [jobs, setJobs] = useState([]);
   const [devices, setDevices] = useState([]);
   const [activeTab, setActiveTab] = useState('overview');
+  const [consentMessage, setConsentMessage] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -34,13 +35,18 @@ const Dashboard = () => {
 
   const handleConsentUpdate = async (field, value) => {
     try {
+      setConsentMessage('');
       const newConsent = {
         ...user.consentSettings,
         [field]: value
       };
       await updateConsent(newConsent);
+      setConsentMessage('Consent settings updated successfully!');
+      setTimeout(() => setConsentMessage(''), 3000);
     } catch (error) {
       console.error('Failed to update consent:', error);
+      setConsentMessage('Failed to update consent settings. Please try again.');
+      setTimeout(() => setConsentMessage(''), 5000);
     }
   };
 
@@ -203,6 +209,11 @@ const Dashboard = () => {
           {activeTab === 'consent' && (
             <div>
               <h2>Consent Settings</h2>
+              {consentMessage && (
+                <div style={consentMessage.includes('success') ? styles.successMessage : styles.errorMessage}>
+                  {consentMessage}
+                </div>
+              )}
               <div style={styles.consentCard}>
                 <label style={styles.checkboxLabel}>
                   <input 
@@ -384,6 +395,22 @@ const styles = {
     background: '#e3f2fd',
     borderRadius: '5px',
     color: '#1976d2'
+  },
+  successMessage: {
+    padding: '15px',
+    marginBottom: '20px',
+    background: '#d4edda',
+    border: '1px solid #c3e6cb',
+    borderRadius: '5px',
+    color: '#155724'
+  },
+  errorMessage: {
+    padding: '15px',
+    marginBottom: '20px',
+    background: '#f8d7da',
+    border: '1px solid #f5c6cb',
+    borderRadius: '5px',
+    color: '#721c24'
   }
 };
 

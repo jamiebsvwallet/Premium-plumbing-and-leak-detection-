@@ -5,16 +5,46 @@ class BSVService {
   constructor() {
     this.privateKey = process.env.BSV_PRIVATE_KEY;
     this.network = process.env.BSV_NETWORK || 'mainnet';
+    
+    // Validate private key on initialization
+    if (!this.privateKey) {
+      console.warn('Warning: BSV_PRIVATE_KEY not configured. Transactions will be simulated.');
+    }
   }
 
   /**
-   * Generate a hash of data
+   * Generate a deterministic hash of data
+   * Uses sorted keys to ensure consistent hashing
    * @param {Object} data - Data to hash
    * @returns {String} - SHA256 hash
    */
   generateDataHash(data) {
-    const dataString = JSON.stringify(data);
+    // Deterministic serialization with sorted keys
+    const sortedData = this._sortObjectKeys(data);
+    const dataString = JSON.stringify(sortedData);
     return crypto.createHash('sha256').update(dataString).digest('hex');
+  }
+
+  /**
+   * Recursively sort object keys for deterministic serialization
+   * @param {*} obj - Object to sort
+   * @returns {*} - Object with sorted keys
+   */
+  _sortObjectKeys(obj) {
+    if (obj === null || typeof obj !== 'object') {
+      return obj;
+    }
+    
+    if (Array.isArray(obj)) {
+      return obj.map(item => this._sortObjectKeys(item));
+    }
+    
+    const sortedObj = {};
+    Object.keys(obj).sort().forEach(key => {
+      sortedObj[key] = this._sortObjectKeys(obj[key]);
+    });
+    
+    return sortedObj;
   }
 
   /**

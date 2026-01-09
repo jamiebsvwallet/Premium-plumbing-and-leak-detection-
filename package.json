@@ -1,0 +1,38 @@
+{
+  "name": "premium-plumbing-leak-detection",
+  "version": "1.0.0",
+  "description": "BSV-based plumbing and leak detection platform with IoT integration",
+  "main": "server/index.js",
+  "scripts": {
+    "start": "node server/index.js",
+    "dev": "nodemon server/index.js",
+    "client": "cd client && npm start",
+    "install-client": "cd client && npm install",
+    "build-client": "cd client && npm run build"
+  },
+  "keywords": [
+    "bsv",
+    "blockchain",
+    "iot",
+    "plumbing",
+    "leak-detection"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^9.0.2",
+    "dotenv": "^16.3.1",
+    "bsv": "^2.0.0",
+    "body-parser": "^1.20.2",
+    "mongoose": "^7.5.0",
+    "socket.io": "^4.7.2",
+    "crypto": "^1.0.1",
+    "express-rate-limit": "^6.10.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}

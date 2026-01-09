@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { authMiddleware } = require('../middleware/auth');
+const { iotDataLimiter } = require('../middleware/rateLimiter');
 const IoTDevice = require('../models/IoTDevice');
 const IoTData = require('../models/IoTData');
 const User = require('../models/User');
@@ -49,7 +50,7 @@ router.get('/my-devices', authMiddleware, async (req, res) => {
 });
 
 // Record IoT data
-router.post('/data', authMiddleware, async (req, res) => {
+router.post('/data', authMiddleware, iotDataLimiter, async (req, res) => {
   try {
     const { deviceId, reading, alert, alertMessage } = req.body;
 

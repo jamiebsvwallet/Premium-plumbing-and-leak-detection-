@@ -4,7 +4,7 @@ import { jobService, iotService } from '../services/api';
 import { useNavigate } from 'react-router-dom';
 
 const Dashboard = () => {
-  const { user, logout } = useAuth();
+  const { user, logout, updateConsent } = useAuth();
   const [jobs, setJobs] = useState([]);
   const [devices, setDevices] = useState([]);
   const [activeTab, setActiveTab] = useState('overview');
@@ -30,6 +30,18 @@ const Dashboard = () => {
   const handleLogout = () => {
     logout();
     navigate('/login');
+  };
+
+  const handleConsentUpdate = async (field, value) => {
+    try {
+      const newConsent = {
+        ...user.consentSettings,
+        [field]: value
+      };
+      await updateConsent(newConsent);
+    } catch (error) {
+      console.error('Failed to update consent:', error);
+    }
   };
 
   return (
@@ -196,7 +208,7 @@ const Dashboard = () => {
                   <input 
                     type="checkbox" 
                     checked={user?.consentSettings?.shareWithCompany}
-                    onChange={(e) => updateConsent('shareWithCompany', e.target.checked)}
+                    onChange={(e) => handleConsentUpdate('shareWithCompany', e.target.checked)}
                   />
                   Share IoT data with Premium Plumbing Company
                 </label>
@@ -204,7 +216,7 @@ const Dashboard = () => {
                   <input 
                     type="checkbox" 
                     checked={user?.consentSettings?.shareWithWaterBoard}
-                    onChange={(e) => updateConsent('shareWithWaterBoard', e.target.checked)}
+                    onChange={(e) => handleConsentUpdate('shareWithWaterBoard', e.target.checked)}
                   />
                   Share IoT data with Water Board
                 </label>
@@ -218,18 +230,6 @@ const Dashboard = () => {
       </div>
     </div>
   );
-
-  async function updateConsent(field, value) {
-    try {
-      const newConsent = {
-        ...user.consentSettings,
-        [field]: value
-      };
-      await useAuth().updateConsent(newConsent);
-    } catch (error) {
-      console.error('Failed to update consent:', error);
-    }
-  }
 };
 
 const styles = {

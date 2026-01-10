@@ -1,0 +1,13 @@
+# Placeholder for leak-detector.glb
+# In a production environment, this would be a 3D model file in glTF format
+# You can create or download a glTF model and place it here
+
+To add a real 3D model:
+1. Create or obtain a glTF (.glb) model of your leak detection device
+2. Replace this file with the actual .glb file
+3. The Digital Twin page will automatically load and display it
+
+Recommended tools:
+- Blender (free, open-source 3D modeling)
+- Sketchfab (download models)
+- glTF Editor tools

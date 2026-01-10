@@ -1,0 +1,14 @@
+# Placeholder for leak-detector.usdz
+# In a production environment, this would be a USDZ model file for iOS Quick Look AR
+# You can create or convert a glTF model to USDZ format
+
+To add a real USDZ model:
+1. Create a 3D model in glTF format
+2. Convert it to USDZ using Apple's Reality Converter or online tools
+3. Replace this file with the actual .usdz file
+4. iOS devices will be able to view it in AR using Quick Look
+
+Conversion tools:
+- Reality Converter (Apple, macOS only)
+- Online converters (search for "glTF to USDZ converter")
+- Blender with USDZ export plugins

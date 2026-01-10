@@ -320,6 +320,18 @@ curl -X POST http://localhost:3000/api/events/ingest \
 - Environment variables for secrets (never committed)
 - Blockchain hashing provides tamper-evident audit trail
 
+### Security Updates
+
+**v0.1.0 Security Patches:**
+- ✅ Updated Next.js from 14.0.4 to 14.2.35 (fixes DoS, cache poisoning, auth bypass, SSRF vulnerabilities)
+- ✅ Updated nodemailer from 6.9.8 to 7.0.7 (fixes email domain interpretation conflict)
+- ⚠️ Remaining vulnerabilities in optional dependencies (puppeteer, bsv) - not critical for MVP
+
+Run `npm audit` to see current status. For production, consider:
+- Updating or removing puppeteer (used for optional PDF generation)
+- Using a different BSV library if needed
+- Regular security updates via `npm audit fix`
+
 ## 📝 Environment Variables Reference
 
 | Variable | Description | Required | Default |

@@ -1,0 +1,98 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String        @id @default(cuid())
+  email         String        @unique
+  passwordHash  String
+  role          String        @default("customer") // customer or operator
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  
+  devices       Device[]
+  consentsGiven Consent[]     @relation("ConsentsGiven")
+  consentsReceived Consent[]  @relation("ConsentsReceived")
+  jobReports    JobReport[]
+}
+
+model Device {
+  id            String        @id @default(cuid())
+  deviceId      String        @unique
+  name          String
+  type          String        @default("leak_sensor")
+  metadata      String?       // JSON string
+  ownerId       String
+  owner         User          @relation(fields: [ownerId], references: [id])
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  
+  events        DeviceEvent[]
+  jobReports    JobReport[]
+}
+
+model DeviceEvent {
+  id            String        @id @default(cuid())
+  deviceId      String
+  device        Device        @relation(fields: [deviceId], references: [id])
+  timestamp     DateTime
+  metrics       String        // JSON string with sensor data
+  alertType     String?       // leak, low_battery, offline, etc.
+  rawPayload    String        // JSON string
+  eventHash     String        // SHA-256 hash of event data
+  createdAt     DateTime      @default(now())
+  
+  bsvAnchor     BsvAnchor?
+}
+
+model Consent {
+  id            String        @id @default(cuid())
+  customerId    String
+  customer      User          @relation("ConsentsGiven", fields: [customerId], references: [id])
+  operatorId    String
+  operator      User          @relation("ConsentsReceived", fields: [operatorId], references: [id])
+  granted       Boolean       @default(true)
+  scope         String        @default("device_events") // what data is shared
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  
+  @@unique([customerId, operatorId])
+}
+
+model JobReport {
+  id            String        @id @default(cuid())
+  userId        String
+  user          User          @relation(fields: [userId], references: [id])
+  deviceId      String?
+  device        Device?       @relation(fields: [deviceId], references: [id])
+  title         String
+  description   String
+  status        String        @default("open") // open, in_progress, completed
+  reportData    String?       // JSON string with report details
+  reportHash    String?       // SHA-256 hash for BSV anchoring
+  bsvTxId       String?       // BSV transaction ID if anchored
+  createdById   String
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+}
+
+model BsvAnchor {
+  id            String        @id @default(cuid())
+  eventId       String        @unique
+  event         DeviceEvent   @relation(fields: [eventId], references: [id])
+  dataHash      String        // SHA-256 hash to anchor
+  status        String        @default("pending") // pending, broadcasted, confirmed, failed
+  txId          String?       // BSV transaction ID
+  rawTx         String?       // Raw transaction hex
+  network       String        @default("testnet") // testnet or mainnet
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+}

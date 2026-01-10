@@ -18,7 +18,7 @@ A comprehensive IoT monitoring platform for plumbing and leak detection with BSV
 ## Tech Stack
 
 ### Frontend
-- **Next.js 14** with TypeScript
+- **Next.js 14.2.35** with TypeScript (security patched)
 - **React 18** for UI components
 - **Socket.IO Client** for real-time updates
 - **Three.js** for 3D visualization
@@ -547,6 +547,30 @@ This is a scaffold MVP. To extend:
 6. Add real BSV transaction broadcasting
 7. Enhance UI/UX
 8. Add tests
+
+## Security
+
+### Dependency Security
+
+This project uses security-patched versions of all dependencies:
+
+- **Next.js 14.2.35**: Patched for DoS vulnerabilities, cache poisoning, SSRF, and authorization bypass issues
+- **nodemailer 7.0.7**: Patched for email domain interpretation conflicts
+
+### Security Best Practices
+
+- ✅ All passwords hashed with bcrypt (10 rounds)
+- ✅ JWT tokens stored in HTTP-only cookies
+- ✅ CORS properly configured
+- ✅ Environment variables for sensitive data
+- ✅ No secrets committed to repository
+- ✅ SHA-256 hashing for data integrity
+- ✅ Role-based access control
+- ✅ Input validation on all API endpoints
+
+### Reporting Security Issues
+
+If you discover a security vulnerability, please email security concerns to the repository maintainers rather than opening a public issue.
 
 ## License
 

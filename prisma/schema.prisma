@@ -1,0 +1,103 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  role      String   @default("customer") // customer or operator
+  name      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  devices         Device[]
+  consentsGiven   Consent[]      @relation("CustomerConsents")
+  consentsReceived Consent[]     @relation("OperatorConsents")
+  jobReports      JobReport[]
+}
+
+model Device {
+  id          String   @id @default(cuid())
+  deviceId    String   @unique
+  name        String
+  type        String   @default("leak-detector")
+  location    String?
+  metadata    String?  // JSON string for additional metadata
+  ownerId     String
+  owner       User     @relation(fields: [ownerId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  events      DeviceEvent[]
+  jobReports  JobReport[]
+}
+
+model DeviceEvent {
+  id            String   @id @default(cuid())
+  deviceId      String
+  device        Device   @relation(fields: [deviceId], references: [id])
+  timestamp     DateTime
+  alertType     String?  // none, warning, critical
+  metrics       String   // JSON string: {flowRate, pressure, temperature, etc}
+  rawPayload    String   // Raw JSON payload from device
+  eventHash     String   // SHA-256 hash of event data
+  createdAt     DateTime @default(now())
+
+  bsvTransactions BSVTransaction[]
+}
+
+model Consent {
+  id          String   @id @default(cuid())
+  customerId  String
+  customer    User     @relation("CustomerConsents", fields: [customerId], references: [id])
+  operatorId  String
+  operator    User     @relation("OperatorConsents", fields: [operatorId], references: [id])
+  granted     Boolean  @default(true)
+  grantedAt   DateTime @default(now())
+  revokedAt   DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([customerId, operatorId])
+}
+
+model BSVTransaction {
+  id          String   @id @default(cuid())
+  eventId     String?
+  event       DeviceEvent? @relation(fields: [eventId], references: [id])
+  jobReportId String?
+  jobReport   JobReport?   @relation(fields: [jobReportId], references: [id])
+  dataHash    String
+  txid        String?
+  rawTx       String?
+  status      String   @default("pending") // pending, broadcast, confirmed
+  network     String   @default("testnet")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model JobReport {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  customerId  String
+  customer    User     @relation(fields: [customerId], references: [id])
+  deviceId    String?
+  device      Device?  @relation(fields: [deviceId], references: [id])
+  status      String   @default("draft") // draft, completed, sent
+  pdfPath     String?
+  createdBy   String   // operator user id
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  bsvTransactions BSVTransaction[]
+}

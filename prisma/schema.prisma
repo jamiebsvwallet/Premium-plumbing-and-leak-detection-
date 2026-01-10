@@ -1,0 +1,94 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String?
+  role      String   @default("customer") // "customer" or "operator"
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  devices        Device[]
+  consentsGiven  Consent[]     @relation("ConsentCustomer")
+  consentsReceived Consent[]   @relation("ConsentOperator")
+  jobReports     JobReport[]
+}
+
+model Device {
+  id          String   @id @default(cuid())
+  deviceId    String   @unique
+  name        String
+  type        String   @default("leak-detector")
+  metadata    String?  // JSON string
+  ownerId     String
+  owner       User     @relation(fields: [ownerId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  events      DeviceEvent[]
+  jobReports  JobReport[]
+}
+
+model DeviceEvent {
+  id          String   @id @default(cuid())
+  deviceId    String
+  device      Device   @relation(fields: [deviceId], references: [id])
+  timestamp   DateTime
+  metrics     String   // JSON string: { flow, pressure, temperature, etc. }
+  alertType   String?  // "leak", "pressure-high", "temperature-high", etc.
+  rawPayload  String   // JSON string of complete event
+  eventHash   String   // SHA-256 hash of event for blockchain anchoring
+  createdAt   DateTime @default(now())
+
+  anchor      BlockchainAnchor?
+}
+
+model Consent {
+  id          String   @id @default(cuid())
+  customerId  String
+  customer    User     @relation("ConsentCustomer", fields: [customerId], references: [id])
+  operatorId  String
+  operator    User     @relation("ConsentOperator", fields: [operatorId], references: [id])
+  granted     Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([customerId, operatorId])
+}
+
+model BlockchainAnchor {
+  id          String   @id @default(cuid())
+  eventId     String   @unique
+  event       DeviceEvent @relation(fields: [eventId], references: [id])
+  txId        String?  // BSV transaction ID
+  txRaw       String?  // Raw transaction hex (optional)
+  status      String   @default("pending") // "pending", "broadcasted", "confirmed", "failed"
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model JobReport {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  deviceId    String?
+  device      Device?  @relation(fields: [deviceId], references: [id])
+  status      String   @default("pending") // "pending", "completed", "cancelled"
+  reportHash  String?  // SHA-256 hash of report
+  txId        String?  // BSV transaction ID if signed
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}

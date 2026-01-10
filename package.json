@@ -9,10 +9,10 @@
     "lint": "next lint",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
-    "prisma:seed": "ts-node --compiler-options {\\\"module\\\":\\\"CommonJS\\\"} prisma/seed.ts",
+    "prisma:seed": "tsx prisma/seed.ts",
     "prisma:studio": "prisma studio",
-    "socket-server": "ts-node server/socket-server.ts",
-    "iot-simulate": "ts-node scripts/iot-simulate.ts"
+    "socket-server": "tsx server/socket-server.ts",
+    "iot-simulate": "tsx scripts/iot-simulate.ts"
   },
   "dependencies": {
     "@prisma/client": "^5.8.0",
@@ -43,6 +43,6 @@
     "@types/nodemailer": "^6.4.14",
     "@types/three": "^0.160.0",
     "prisma": "^5.8.0",
-    "ts-node": "^10.9.2"
+    "tsx": "^4.21.0"
   }
 }

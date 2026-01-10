@@ -12,7 +12,8 @@
     "prisma:seed": "tsx prisma/seed.ts",
     "prisma:studio": "prisma studio",
     "socket-server": "tsx server/socket-server.ts",
-    "iot-simulate": "tsx scripts/iot-simulate.ts"
+    "iot-simulate": "tsx scripts/iot-simulate.ts",
+    "test:workflow": "bash scripts/test-workflow.sh"
   },
   "dependencies": {
     "@prisma/client": "^5.8.0",

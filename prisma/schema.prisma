@@ -1,0 +1,91 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String?
+  role      String   @default("customer") // "customer" or "operator"
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  devices        Device[]
+  jobReports     JobReport[]
+  consentsGiven  Consent[]     @relation("CustomerConsents")
+  consentsReceived Consent[]   @relation("OperatorConsents")
+}
+
+model Device {
+  id          String   @id @default(cuid())
+  deviceId    String   @unique
+  name        String
+  type        String?
+  metadata    String?  // JSON string
+  ownerId     String
+  owner       User     @relation(fields: [ownerId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  events      DeviceEvent[]
+  jobReports  JobReport[]
+  consents    Consent[]
+}
+
+model DeviceEvent {
+  id          String   @id @default(cuid())
+  deviceId    String
+  device      Device   @relation(fields: [deviceId], references: [id])
+  timestamp   DateTime
+  metrics     String   // JSON string: { temperature, pressure, flow, etc }
+  alertType   String?  // null, "leak", "anomaly", "offline"
+  rawPayload  String?  // Full JSON payload
+  dataHash    String   // SHA-256 hash of event data
+  bsvTxId     String?  // BSV transaction ID after anchoring
+  bsvRawTx    String?  // BSV raw transaction hex
+  bsvStatus   String   @default("pending") // "pending", "broadcast", "confirmed", "failed"
+  createdAt   DateTime @default(now())
+
+  @@index([deviceId, timestamp])
+}
+
+model Consent {
+  id          String   @id @default(cuid())
+  customerId  String
+  customer    User     @relation("CustomerConsents", fields: [customerId], references: [id])
+  operatorId  String
+  operator    User     @relation("OperatorConsents", fields: [operatorId], references: [id])
+  deviceId    String
+  device      Device   @relation(fields: [deviceId], references: [id])
+  granted     Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  revokedAt   DateTime?
+
+  @@unique([customerId, operatorId, deviceId])
+}
+
+model JobReport {
+  id          String   @id @default(cuid())
+  customerId  String
+  customer    User     @relation(fields: [customerId], references: [id])
+  deviceId    String?
+  device      Device?  @relation(fields: [deviceId], references: [id])
+  title       String
+  description String
+  status      String   @default("completed") // "completed", "pending", "cancelled"
+  reportData  String?  // JSON string with detailed report data
+  pdfUrl      String?
+  reportHash  String?  // SHA-256 hash of report
+  bsvTxId     String?  // BSV transaction ID for report signature
+  createdAt   DateTime @default(now())
+  createdBy   String?  // operator user id who created report
+}

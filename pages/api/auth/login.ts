@@ -1,16 +1,20 @@
-import { NextRequest, NextResponse } from 'next/server'
+import type { NextApiRequest, NextApiResponse } from 'next'
 import { prisma } from '@/lib/prisma'
 import { comparePassword, signToken } from '@/lib/auth'
 
-export async function POST(request: NextRequest) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method not allowed' })
+  }
+
   try {
-    const { email, password } = await request.json()
+    const { email, password } = req.body
 
     if (!email || !password) {
-      return NextResponse.json(
-        { error: 'Email and password are required' },
-        { status: 400 }
-      )
+      return res.status(400).json({ error: 'Email and password are required' })
     }
 
     // Find user
@@ -19,19 +23,13 @@ export async function POST(request: NextRequest) {
     })
 
     if (!user) {
-      return NextResponse.json(
-        { error: 'Invalid credentials' },
-        { status: 401 }
-      )
+      return res.status(401).json({ error: 'Invalid credentials' })
     }
 
     // Verify password
     const isValid = await comparePassword(password, user.passwordHash)
     if (!isValid) {
-      return NextResponse.json(
-        { error: 'Invalid credentials' },
-        { status: 401 }
-      )
+      return res.status(401).json({ error: 'Invalid credentials' })
     }
 
     // Generate JWT token
@@ -41,7 +39,7 @@ export async function POST(request: NextRequest) {
       role: user.role,
     })
 
-    return NextResponse.json({
+    return res.status(200).json({
       token,
       user: {
         id: user.id,
@@ -52,9 +50,6 @@ export async function POST(request: NextRequest) {
     })
   } catch (error) {
     console.error('Login error:', error)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    return res.status(500).json({ error: 'Internal server error' })
   }
 }

@@ -1,16 +1,20 @@
-import { NextRequest, NextResponse } from 'next/server'
+import type { NextApiRequest, NextApiResponse } from 'next'
 import { prisma } from '@/lib/prisma'
 import { hashPassword, signToken } from '@/lib/auth'
 
-export async function POST(request: NextRequest) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method not allowed' })
+  }
+
   try {
-    const { email, password, name } = await request.json()
+    const { email, password, name } = req.body
 
     if (!email || !password) {
-      return NextResponse.json(
-        { error: 'Email and password are required' },
-        { status: 400 }
-      )
+      return res.status(400).json({ error: 'Email and password are required' })
     }
 
     // Check if user already exists
@@ -19,10 +23,7 @@ export async function POST(request: NextRequest) {
     })
 
     if (existingUser) {
-      return NextResponse.json(
-        { error: 'User already exists' },
-        { status: 409 }
-      )
+      return res.status(409).json({ error: 'User already exists' })
     }
 
     // Create new user with default CUSTOMER role
@@ -43,7 +44,7 @@ export async function POST(request: NextRequest) {
       role: user.role,
     })
 
-    return NextResponse.json({
+    return res.status(200).json({
       token,
       user: {
         id: user.id,
@@ -54,9 +55,6 @@ export async function POST(request: NextRequest) {
     })
   } catch (error) {
     console.error('Signup error:', error)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    return res.status(500).json({ error: 'Internal server error' })
   }
 }

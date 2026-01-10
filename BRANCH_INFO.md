@@ -6,3 +6,4 @@ Branch: scaffold/webxr-mvp
 Target: main
 
 See README.md for complete documentation and setup instructions.
+Ready for PR into main

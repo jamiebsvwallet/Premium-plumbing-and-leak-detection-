@@ -10,7 +10,7 @@
  *   npm run simulate -- --help
  */
 
-import fetch from 'node-fetch';
+// Using global fetch available in Node 18+
 
 interface SimulatorOptions {
   deviceId: string;

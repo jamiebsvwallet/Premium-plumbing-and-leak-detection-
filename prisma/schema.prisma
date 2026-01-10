@@ -1,0 +1,101 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  CUSTOMER
+  OPERATOR
+  ADMIN
+}
+
+enum AnchorStatus {
+  PENDING
+  SENT
+  FAILED
+  CONFIRMED
+}
+
+model User {
+  id            String        @id @default(uuid())
+  email         String        @unique
+  passwordHash  String
+  name          String?
+  role          Role          @default(CUSTOMER)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  
+  devices       Device[]
+  consentsGranted Consent[]   @relation("ConsentOwner")
+  consentsReceived Consent[]  @relation("ConsentOperator")
+  jobReports    JobReport[]
+}
+
+model Device {
+  id            String        @id @default(uuid())
+  name          String
+  type          String?       // e.g., "water_sensor", "leak_detector"
+  ownerId       String
+  owner         User          @relation(fields: [ownerId], references: [id])
+  metadata      String?       // JSON string for additional device info
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  
+  events        DeviceEvent[]
+  consents      Consent[]
+  jobReports    JobReport[]
+}
+
+model DeviceEvent {
+  id            String        @id @default(uuid())
+  deviceId      String
+  device        Device        @relation(fields: [deviceId], references: [id])
+  eventType     String        // e.g., "reading", "alert", "diagnostic"
+  data          String        // JSON string containing event data
+  sha256        String        // SHA-256 hash of the event data
+  bsvTxId       String?       // BSV transaction ID (null until anchored)
+  anchorStatus  AnchorStatus  @default(PENDING)
+  timestamp     DateTime      @default(now())
+  
+  @@index([deviceId])
+  @@index([anchorStatus])
+}
+
+model Consent {
+  id            String        @id @default(uuid())
+  deviceId      String
+  device        Device        @relation(fields: [deviceId], references: [id])
+  ownerId       String
+  owner         User          @relation("ConsentOwner", fields: [ownerId], references: [id])
+  operatorId    String
+  operator      User          @relation("ConsentOperator", fields: [operatorId], references: [id])
+  granted       Boolean       @default(false)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  
+  @@unique([deviceId, operatorId])
+}
+
+model JobReport {
+  id            String        @id @default(uuid())
+  deviceId      String
+  device        Device        @relation(fields: [deviceId], references: [id])
+  operatorId    String
+  operator      User          @relation(fields: [operatorId], references: [id])
+  title         String
+  description   String
+  pdfPath       String?       // Path to generated PDF report
+  bsvTxId       String?       // Optional BSV transaction ID
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  
+  @@index([deviceId])
+  @@index([operatorId])
+}

@@ -2,6 +2,14 @@
 
 IoT-powered water leak detection platform with blockchain-verified data integrity, real-time monitoring, 3D digital twin visualization, and AR diagnostics.
 
+## 🔒 Security Status
+
+✅ **Updated January 2026**: All critical Next.js and nodemailer vulnerabilities patched.
+- Next.js: 14.2.35 (patched 28 vulnerabilities)
+- nodemailer: 7.0.7 (patched email domain issues)
+
+See [SECURITY.md](./SECURITY.md) for details on security updates and remaining transitive dependency issues.
+
 ## 🌟 Features
 
 - **IoT Device Management**: Register and monitor leak detection devices

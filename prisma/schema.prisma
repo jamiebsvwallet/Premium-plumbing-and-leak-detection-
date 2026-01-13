@@ -1,0 +1,89 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  OWNER
+  OPERATOR
+}
+
+enum AnchorStatus {
+  PENDING
+  ANCHORED
+  FAILED
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  role      Role     @default(OWNER)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  devices    Device[]
+  consents   Consent[]
+  jobReports JobReport[]
+}
+
+model Device {
+  id          String   @id @default(uuid())
+  name        String
+  serialNo    String   @unique
+  ownerId     String
+  owner       User     @relation(fields: [ownerId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  events      DeviceEvent[]
+  consents    Consent[]
+  jobReports  JobReport[]
+}
+
+model DeviceEvent {
+  id           String       @id @default(uuid())
+  deviceId     String
+  device       Device       @relation(fields: [deviceId], references: [id])
+  eventType    String
+  payload      String
+  sha256       String       @unique
+  bsvTxId      String?
+  anchorStatus AnchorStatus @default(PENDING)
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+}
+
+model Consent {
+  id          String   @id @default(uuid())
+  deviceId    String
+  device      Device   @relation(fields: [deviceId], references: [id])
+  operatorId  String
+  operator    User     @relation(fields: [operatorId], references: [id])
+  granted     Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([deviceId, operatorId])
+}
+
+model JobReport {
+  id          String   @id @default(uuid())
+  deviceId    String
+  device      Device   @relation(fields: [deviceId], references: [id])
+  technicianId String
+  technician  User     @relation(fields: [technicianId], references: [id])
+  title       String
+  description String
+  status      String   @default("DRAFT")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}

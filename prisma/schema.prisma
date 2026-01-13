@@ -1,0 +1,92 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// SQLite doesn't support enums, so we use String with validation at app level
+// Valid Role values: CUSTOMER, OPERATOR, ADMIN
+// Valid AnchorStatus values: PENDING, SENT, FAILED
+
+model User {
+  id           String        @id @default(cuid())
+  email        String        @unique
+  passwordHash String
+  name         String?
+  role         String        @default("CUSTOMER")
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  devices      Device[]
+  consents     Consent[]
+  jobReports   JobReport[]
+}
+
+model Device {
+  id           String        @id @default(cuid())
+  name         String
+  serialNumber String        @unique
+  type         String?
+  userId       String
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  events       DeviceEvent[]
+  consents     Consent[]
+  jobReports   JobReport[]
+}
+
+model DeviceEvent {
+  id           String        @id @default(cuid())
+  deviceId     String
+  device       Device        @relation(fields: [deviceId], references: [id], onDelete: Cascade)
+  timestamp    DateTime
+  metrics      String        // JSON string
+  alertType    String?
+  rawPayload   String?       // JSON string
+  sha256       String        @unique
+  anchorStatus String        @default("PENDING")
+  bsvTxId      String?
+  createdAt    DateTime      @default(now())
+  
+  @@index([deviceId])
+  @@index([anchorStatus])
+}
+
+model Consent {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  deviceId   String
+  device     Device   @relation(fields: [deviceId], references: [id], onDelete: Cascade)
+  operatorId String
+  granted    Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  
+  @@unique([userId, deviceId, operatorId])
+  @@index([operatorId])
+}
+
+model JobReport {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  deviceId  String
+  device    Device   @relation(fields: [deviceId], references: [id], onDelete: Cascade)
+  title     String
+  content   String
+  pdfPath   String?
+  bsvTxId   String?
+  createdBy String   // operator userId
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@index([deviceId])
+  @@index([userId])
+}

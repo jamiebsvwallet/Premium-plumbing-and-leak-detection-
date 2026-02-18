@@ -24,3 +24,13 @@ This guide explains:
 ## Need Help?
 
 If you have any questions or need assistance accessing your conversation history, please don't hesitate to contact us!
+
+---
+
+## For Business Owners
+
+**Note**: This repository contains template documentation with placeholder contact information (marked with `[brackets]`). Please update the following files with your actual business information:
+- Replace `[Business Phone Number]` with your actual phone number
+- Replace `[portal URL]` with your actual customer portal URL
+- Replace `support@ppld.com` with your actual support email
+- Update any other placeholder text marked with brackets

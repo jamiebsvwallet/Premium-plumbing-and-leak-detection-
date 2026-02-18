@@ -8,7 +8,7 @@ Premium Plumbing and Leak Detection is your trusted partner for all plumbing nee
 
 - 📝 **[How to Access Your Conversation History](CONVERSATION_HISTORY.md)** - View your previous conversations with us
 - ❓ **[FAQ: Finding Conversations](FAQ_CONVERSATION_ACCESS.md)** - Quick answers for finding specific conversations
-- 🔧 **[ESP32-C5 CSI Reference](ESP32_C5_CSI_REFERENCE.md)** - Technical reference for ESP32-C5 Channel State Information
+- 📡 **[ESP32-C5 CSI Reference](ESP32_C5_CSI_REFERENCE.md)** - Technical reference for ESP32-C5 Channel State Information
 - 📞 **Contact Information** - [Add contact details]
 - 🛠️ **Services** - Professional plumbing and leak detection
 

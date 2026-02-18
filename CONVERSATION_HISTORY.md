@@ -37,6 +37,27 @@ To access your conversation from last night specifically:
 3. **Look for messages from yesterday evening** (check the timestamp)
 4. **If you can't find it**, contact us directly and we can provide a summary
 
+### For Technical Conversations
+
+If your conversation involved technical topics (e.g., **ESP32-C5 CSI**, programming, hardware):
+
+**Use Specific Keywords:**
+- Search for technical terms like "ESP32-C5", "CSI", "Channel State Information"
+- Look for code snippets or technical jargon
+- Check browser history for documentation pages you visited
+- Review code repositories for related commits
+
+**Additional Search Locations:**
+- 💻 **Code editor recent files** (VS Code, etc.)
+- 📚 **Documentation browser history**
+- 📓 **Note-taking apps** (OneNote, Notion, Evernote)
+- 🔧 **Developer tools** chat history
+- 📦 **Git commits** and code comments
+
+**👉 See [Technical Conversation Search Guide](FAQ_CONVERSATION_ACCESS.md#searching-for-technical-conversations) for detailed instructions**
+
+**📚 ESP32-C5 CSI Topics?** Check our [ESP32-C5 CSI Reference](ESP32_C5_CSI_REFERENCE.md)
+
 ## Need Help?
 
 If you're having trouble finding your conversation history:

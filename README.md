@@ -7,14 +7,24 @@ Premium Plumbing and Leak Detection is your trusted partner for all plumbing nee
 ## Quick Links
 
 - 📝 **[How to Access Your Conversation History](CONVERSATION_HISTORY.md)** - View your previous conversations with us
+- ❓ **[FAQ: Finding Conversations](FAQ_CONVERSATION_ACCESS.md)** - Quick answers for finding specific conversations
+- 🔧 **[ESP32-C5 CSI Reference](ESP32_C5_CSI_REFERENCE.md)** - Technical reference for ESP32-C5 Channel State Information
 - 📞 **Contact Information** - [Add contact details]
-- 🔧 **Services** - Professional plumbing and leak detection
+- 🛠️ **Services** - Professional plumbing and leak detection
 
 ## Accessing Previous Conversations
 
 Need to review a conversation from last night or any previous interaction? Check out our comprehensive guide:
 
 👉 **[View the Conversation History Guide](CONVERSATION_HISTORY.md)**
+
+### Looking for a Technical Conversation?
+
+If your conversation was about a **technical topic** (like ESP32-C5 CSI, programming, hardware):
+- 🔍 **[Search tips for technical conversations](FAQ_CONVERSATION_ACCESS.md#searching-for-technical-conversations)**
+- 📚 **[ESP32-C5 CSI Reference](ESP32_C5_CSI_REFERENCE.md)** - For ESP32 and Channel State Information topics
+
+### General Conversation Access
 
 This guide explains:
 - How to access conversations from email, chat, and phone

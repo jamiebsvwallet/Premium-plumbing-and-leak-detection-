@@ -4,6 +4,9 @@
 
 This is a common question! Here are the quickest ways to find your recent conversation:
 
+### **Looking for a specific technical conversation?** 
+If your conversation was about a technical topic (e.g., ESP32-C5 CSI, programming, hardware), see the [Technical Conversation Search](#searching-for-technical-conversations) section below.
+
 ### Quick Answer:
 1. **Check your email inbox** - Search for emails from Premium Plumbing (PPLD)
 2. **Check your messaging app** - Look for our chat conversation
@@ -81,6 +84,68 @@ Your conversations are:
 - 🔐 Securely encrypted
 - 👤 Only accessible by you and authorized staff
 - 📋 Stored according to data protection regulations
+
+---
+
+## Searching for Technical Conversations
+
+### Example: Finding ESP32-C5 CSI Conversation
+
+If your conversation was about a technical topic like **ESP32-C5 CSI** (Channel State Information), here's how to find it:
+
+#### Search Keywords to Use:
+- `ESP32-C5` or `ESP32 C5` or `ESP32C5`
+- `CSI` or `Channel State Information`
+- `Wi-Fi sensing` or `Wi-Fi 6`
+- `802.11ax`
+- `ESP-IDF`
+- Related technical terms: `subcarrier`, `amplitude`, `phase`, `RSSI`, `gesture recognition`
+
+#### Where to Search:
+
+1. **📧 Email Search**
+   ```
+   Search: "ESP32-C5" OR "CSI" OR "Channel State"
+   Date filter: Yesterday
+   ```
+
+2. **💬 Chat Applications**
+   - Use the search/find feature in your messaging app
+   - Search for "ESP32" to find all related messages
+   - Look for code snippets or technical discussions
+
+3. **🖥️ Browser History**
+   - Press `Ctrl+H` (Windows/Linux) or `Cmd+Y` (Mac)
+   - Search for: "ESP32-C5", "Espressif", "CSI documentation"
+   - Check timestamps for yesterday evening
+
+4. **📝 Code Repositories**
+   - Check Git commit history: `git log --grep="ESP32" --since="yesterday"`
+   - Search code comments or documentation
+   - Look for recently modified files
+
+5. **📓 Note-Taking Apps**
+   - Search OneNote, Evernote, Notion, etc.
+   - Look for technical notes about ESP32
+   - Check recently modified notes
+
+#### Technical Conversation Tips:
+
+- **Look for specific terms**: Technical conversations often include unique keywords that are easy to search
+- **Check documentation sites**: If you visited ESP32-C5 docs, they might be in browser history
+- **Review code editors**: Check recent files in VS Code, Arduino IDE, etc.
+- **Search developer forums**: Stack Overflow, Reddit, ESP32 forum posts
+- **Check GitHub**: Search your repositories, issues, or pull requests
+
+#### Can't Find Your ESP32-C5 CSI Conversation?
+
+If you still can't locate it:
+1. **Describe what you remember**: Topic (CSI data processing, setup, specific issue)
+2. **List technical details**: ESP-IDF version, development board, specific CSI features
+3. **Contact us** with these details and we can help locate the conversation
+
+**📚 Need ESP32-C5 CSI Reference Material?**
+See our [ESP32-C5 CSI Reference Guide](ESP32_C5_CSI_REFERENCE.md) for technical documentation and common topics.
 
 ---
 
